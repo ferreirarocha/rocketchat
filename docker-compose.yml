@@ -4,11 +4,12 @@ services:
   rocketchat:
     image: rocketchat/rocket.chat:latest
     restart: unless-stopped
+    container_name: rocketchat
     volumes:
       - uploads:/app/uploads
     environment:
       - PORT=3000
-      - ROOT_URL=http://chat.alfabech.eti.br:80
+      - ROOT_URL=http://chat.alfabech.info:80
       - MONGO_URL=mongodb://mongo:27017/rocketchat
       - MONGO_OPLOG_URL=mongodb://mongo:27017/local
       - MAIL_URL=smtp://smtp.email
@@ -25,6 +26,8 @@ services:
   mongo:
     image: mongo:3.2
     restart: unless-stopped
+    container_name: rocketchat_mongo
+
     volumes:
      - banco:/data/db
      #- ./data/dump:/dump
@@ -36,6 +39,8 @@ services:
   # it will run the command and remove himself (it will not stay running)
   mongo-init-replica:
     image: mongo:3.2
+    container_name: rocketchat_mongo_replica
+
     command: 'mongo mongo/rocketchat --eval "rs.initiate({ _id: ''rs0'', members: [ { _id: 0, host: ''localhost:27017'' } ]})"'
     depends_on:
       - mongo
